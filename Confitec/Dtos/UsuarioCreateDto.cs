@@ -22,6 +22,7 @@ namespace Confitec.Dtos
         public DateTime DataNascimento { get; set; }
 
         [Required(ErrorMessage = "Escolaridade é necessária")]
+        [EnumDataType(typeof(Escolaridade))]
         public Escolaridade Escolaridade { get; set; }
     }
 }
