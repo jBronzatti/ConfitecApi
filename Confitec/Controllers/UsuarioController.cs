@@ -23,10 +23,9 @@ namespace Confitec.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<UsuarioDto>>> GetUsuarios()
+        public async Task<ActionResult<List<Usuario>>> GetUsuarios()
         {
-            var usuarioList = await _usuarioRepository.GetAllAsync();
-            return Ok(usuarioList.Select(usuario => _mapper.Map<UsuarioDto>(usuario)));
+            return Ok(await _usuarioRepository.GetAllAsync());
         }
 
         [HttpGet("{id}")]
@@ -39,12 +38,17 @@ namespace Confitec.Controllers
                 return NotFound("Usuário não encontrado.");
             }
 
-            return Ok(_mapper.Map<UsuarioDto>(usuario));
+            return Ok(usuario);
         }
 
         [HttpPost]
-        public async Task<ActionResult> CreateUsuario([FromBody] UsuarioDto novoUsuarioDto)
+        public async Task<ActionResult> CreateUsuario([FromBody] UsuarioCreateDto novoUsuarioDto)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             var usuario = _mapper.Map<Usuario>(novoUsuarioDto);
             await _usuarioRepository.AddAsync(usuario);
 
@@ -52,12 +56,14 @@ namespace Confitec.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult<List<Usuario>>> UpdateUsuario(int id, [FromBody] UsuarioDto usuarioDto)
+        public async Task<ActionResult<List<Usuario>>> UpdateUsuario(int id, [FromBody] UsuarioCreateDto usuario)
         {
-            if (id != usuarioDto.Id) return BadRequest("O ID fornecido na rota não corresponde ao ID no corpo da requisição.");
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
-            var usuario = _mapper.Map<Usuario>(usuarioDto);
-            var dbUsuario = await _usuarioRepository.GetByIdAsync(usuarioDto.Id);
+            var dbUsuario = await _usuarioRepository.GetByIdAsync(id);
 
             if (dbUsuario == null) return NotFound("Usuário não encontrado");
 

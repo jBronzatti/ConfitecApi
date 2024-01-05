@@ -6,7 +6,7 @@ namespace Confitec.Validations
     {
         public override string FormatErrorMessage(string name)
         {
-            return $"A data {name} não pode ser uma data futura";
+            return "A data não pode ser uma data futura";
         }
 
         protected override ValidationResult IsValid(object objValue, ValidationContext validationContext)

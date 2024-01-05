@@ -8,8 +8,8 @@ namespace Confitec.Mappers
     {
         public UsuarioProfile()
         {
-            CreateMap<Usuario, UsuarioDto>();
-            CreateMap<UsuarioDto, Usuario>();
+            CreateMap<Usuario, UsuarioCreateDto>();
+            CreateMap<UsuarioCreateDto, Usuario>();
         }
     }
 }
