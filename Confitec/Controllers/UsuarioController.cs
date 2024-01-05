@@ -23,12 +23,18 @@ namespace Confitec.Controllers
         }
 
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<Usuario>))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<List<Usuario>>> GetUsuarios()
         {
             return Ok(await _usuarioRepository.GetAllAsync());
         }
 
         [HttpGet("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Usuario))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<Usuario>> GetUsuarioById(int id)
         {
             var usuario = await _usuarioRepository.GetByIdAsync(id);
@@ -42,13 +48,12 @@ namespace Confitec.Controllers
         }
 
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Usuario))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> CreateUsuario([FromBody] UsuarioCreateDto novoUsuarioDto)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             var usuario = _mapper.Map<Usuario>(novoUsuarioDto);
             await _usuarioRepository.AddAsync(usuario);
 
@@ -56,13 +61,12 @@ namespace Confitec.Controllers
         }
 
         [HttpPut("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent, Type = typeof(Usuario))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<List<Usuario>>> UpdateUsuario(int id, [FromBody] UsuarioCreateDto usuario)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             var dbUsuario = await _usuarioRepository.GetByIdAsync(id);
 
             if (dbUsuario == null) return NotFound("Usuário não encontrado");
@@ -79,6 +83,9 @@ namespace Confitec.Controllers
         }
 
         [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent, Type = typeof(Usuario))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> DeleteUsuario(int id)
         {
             var usuarioExistente = await _usuarioRepository.GetByIdAsync(id);
