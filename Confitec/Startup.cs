@@ -43,6 +43,7 @@ public class Startup
             app.UseHsts();
         }
 
+        app.UseCors(policy => policy.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
         app.UseHttpsRedirection();
         app.UseRouting();
         app.UseAuthorization();
